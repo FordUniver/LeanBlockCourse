@@ -22,7 +22,7 @@
 * [LeanSearch](https://leansearch.net) is a helpful resource for finding results in mathlib
 * [Theorem Proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/) by Jeremy Avigad, Leonardo de Moura, Soonho Kong, Sebastian Ullrich
 * [Mathematics in Lean](https://leanprover-community.github.io/mathematics_in_lean/) by Jeremy Avigad and Patrick Massot
-* [The Hitchhiker’s Guide to Logical Verification](The Hitchhiker’s Guide to Logical Verification by Anne Baa) by Anne Baanen, Alexander Bentkamp, Jasmin Blanchette, Johannes Hölzl, Jannis Limperg
+* [The Hitchhiker’s Guide to Logical Verification](https://cs.brown.edu/courses/cs1951x/static_files/main.pdf) by Anne Baanen, Alexander Bentkamp, Jasmin Blanchette, Johannes Hölzl, Jannis Limperg
 * [The Mechanics of Proof](https://hrmacbeth.github.io/math2001/) by Heather Macbeth
 * [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/) by David Thrane Christiansen
 * The [Lean Game Server](https://adam.math.hhu.de) inspired many of the smaller exercises
