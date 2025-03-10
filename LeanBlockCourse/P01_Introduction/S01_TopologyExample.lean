@@ -1,7 +1,7 @@
 import Mathlib.Topology.Basic
 
 variable {X Y Z : Type*}
-variable [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
+variable [t1 : TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
 
 
 example {f : X → Y} {g: Y → Z}
@@ -10,7 +10,7 @@ example {f : X → Y} {g: Y → Z}
 
   constructor
   intros U hU
-
+  
   let V := g⁻¹' U
   have hV : IsOpen V := hg.isOpen_preimage U hU
 
