@@ -102,7 +102,7 @@ example (P Q : Prop) (p : P) (q : Q) : P := by
 -/
 
 example : 3 + 2 = 5 := by
-  sorry
+  rfl
 
 example (M : Prop) (m : M) : M := by
-  sorry
+  exact m
