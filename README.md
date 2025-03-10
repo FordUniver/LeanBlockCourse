@@ -14,7 +14,20 @@
 * Participants need to bring a laptop to do the exercises and follow along during the course and work on exercises and project work.
 * Completion of Analysis I and Linear Algebra I should provide a sufficient mathematical background, but participants should have a strong understanding of these subjects, as formal proof verification is very "unforgiving". No prior programming experience is required, but a certain "technical affinity and interest" is needed.
 * The course will be conducted in English, but students may express themselves in German if they prefer.
- 
+
+## Technical difficulties
+
+### Wrangling `lean` and `lake`
+
+* `lake init ProjectName math` sets up a project with mathlib as a dependency in the current folder.
+* `lake build` builds the project.
+* `pkill -f lean` kills the running Lean server.
+* `lake exe cache get` pulls the pre-compiled mathlib binaries.
+* In the worst casem deleting the `.lake` folder and running `lake clean` can fix many issues.
+
+### Versioning with `git`
+
+*To be added.*
 
 ## Resources
 
