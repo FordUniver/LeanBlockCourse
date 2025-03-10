@@ -342,9 +342,23 @@ example (P Q : Prop) (h₁ : Q = P) (pqr : P ∧ Q ∧ P) : P ∧ Q ∧ Q := by
 -- Shows how to use rw to prove that if `P` and `Q` are equivalent, and `Q` and
 -- `R` are equivalent, then `P` and `R` are equivalent (transitivity of `↔`)
 example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by
-  sorry
+  rw [h₁, h₂] -- implicit rfl call
+
+example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by
+  rw [← h₂]
+  exact h₁
+
+example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by
+  rw [← h₁] at h₂
+  exact h₂
 
 -- Shows how to use rw to prove that if `P` and `Q` are equivalent, and `Q` and `R`
 -- are equivalent, then `P` and `R` are equivalent (transitivity of `↔`)
 example (P Q : Prop) (h : Q ↔ P) : P → Q := by
-  sorry
+  rw [h]
+  intro p
+  exact p
+
+example (P Q : Prop) (h : Q ↔ P) : P → Q := by
+  intro p
+  exact h.mpr p
