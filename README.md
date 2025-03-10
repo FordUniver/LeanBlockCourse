@@ -19,7 +19,7 @@
 ## Resources
 
 * The [mathlib documentation](https://leanprover-community.github.io/mathlib4_docs/index.html) is the official documentation of the [mathlib library](https://github.com/leanprover-community/mathlib4)
-* [LeanSearch]([https://leansearch.net](https://leansearch.net) is a helpful resource for finding results in mathlib
+* [LeanSearch](https://leansearch.net) is a helpful resource for finding results in mathlib
 * [Theorem Proving in Lean 4](https://leanprover.github.io/theorem_proving_in_lean4/) by Jeremy Avigad, Leonardo de Moura, Soonho Kong, Sebastian Ullrich
 * [Mathematics in Lean](https://leanprover-community.github.io/mathematics_in_lean/) by Jeremy Avigad and Patrick Massot
 * [The Hitchhiker’s Guide to Logical Verification](The Hitchhiker’s Guide to Logical Verification by Anne Baa) by Anne Baanen, Alexander Bentkamp, Jasmin Blanchette, Johannes Hölzl, Jannis Limperg
