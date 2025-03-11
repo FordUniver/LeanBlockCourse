@@ -499,10 +499,53 @@ example (P₁ P₂ P₃ : Prop) (h₁ : P₁ → P₂) (h₂ : P₂ → P₃) (h
 
 /-
 # Exercises
+
+Remember:
+AND – use ⟨ ⟩ with ,
+OR  - use ( ) with |
 -/
 
 -- Prove the associativity of disjunction: `(P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R)`.
-example (P Q R : Prop) : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := by sorry
+example (P Q R : Prop) : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := by
+  constructor
+  · rintro ((p | q) | r)
+    · left; exact p
+    · right; left; exact q
+    · right; right; exact r
+  · rintro (p | (q | r))
+    · left; left; exact p
+    · left; right; exact q
+    · right; exact r
+
+example (P Q R : Prop) : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := by
+  constructor
+  · rintro ((p | q) | r)
+    all_goals simp_all
+  · rintro (p | (q | r))
+    all_goals simp_all
 
 -- Prove that `OR` distributes over `AND` in both directions.
-example (P Q R : Prop) : (P ∧ Q) ∨ R ↔ (P ∨ R) ∧ (Q ∨ R) := by sorry
+example (P Q R : Prop) : (P ∧ Q) ∨ R ↔ (P ∨ R) ∧ (Q ∨ R) := by
+  constructor
+  · rintro (⟨p, q⟩ | r)
+    · constructor
+      · left; exact p
+      · left; exact q
+    · constructor
+      · right; exact r
+      · right; exact r
+  · rintro ⟨ (p | r), (q | r)⟩
+    · left; exact ⟨p, q⟩
+    · right; exact r
+    · right; exact r
+    · right; exact r
+
+example (P Q R : Prop) : (P ∧ Q) ∨ R ↔ (P ∨ R) ∧ (Q ∨ R) := by
+  constructor
+  · rintro (⟨p, q⟩ | r)
+    · exact ⟨Or.inl p, Or.inl q⟩
+    · exact ⟨Or.inr r, Or.inr r⟩
+  · rintro ⟨p | r, q | r⟩
+    · exact Or.inl ⟨p, q⟩
+    all_goals exact Or.inr r
+    
