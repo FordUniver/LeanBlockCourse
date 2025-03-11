@@ -300,12 +300,209 @@ example (P Q R : Prop) (h : (P ∧ Q) ∧ R) : Q := by
   rcases h with ⟨⟨_, q⟩, _⟩
   exact q
 
+
+
+
 /-
-# Exercoise
+## The `rintro` tactic
+
+`rintro` allows for more complex pattern matching and is
+used around 7500 times in mathlib.
+-/
+
+example (P Q R : Prop) : (P ∧ Q) ∨ R → P ∨ R := by
+  intro h
+  rcases h with ⟨p, _⟩ | r
+  · left; exact p
+  · right; exact r
+
+example (P Q R : Prop) : (P ∧ Q) ∨ R → P ∨ R := by
+  rintro (⟨p, _⟩ | r)
+  · left; exact p
+  · right; exact r
+
+example (P Q R : Prop) : (P ∧ (Q ∨ R)) → (P ∧ Q) ∨ (P ∧ R) := by
+  rintro ⟨p, q | r⟩
+  · left; exact ⟨p, q⟩
+  · right; exact ⟨p, r⟩
+
+/-
+# Exercise
+
+Hint: try `rintro` with nested structures
 -/
 
 example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by
-  sorry
+  intro pqrs
+  obtain ⟨pq, rs⟩ := pqrs
+  cases' pq with p q
+  · cases' rs with r s
+    · left; exact ⟨p, r⟩ 
+    · right; left; exact ⟨p, s⟩
+  · cases' rs with r s
+    · right; right; left; exact ⟨q, r⟩
+    · right; right; right; exact ⟨q, s⟩
+
+example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by
+  intro ⟨pq, rs⟩
+  cases' pq with p q
+  all_goals cases' rs with r s
+  · left; exact ⟨p, r⟩ 
+  · right; left; exact ⟨p, s⟩
+  · right; right; left; exact ⟨q, r⟩
+  · right; right; right; exact ⟨q, s⟩
+
+example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by
+  rintro ⟨p | q, r | s⟩
+  · exact Or.inl ⟨p, r⟩
+  · exact Or.inr <| Or.inl ⟨p, s⟩
+  · exact Or.inr <| Or.inr <| Or.inl ⟨q, r⟩
+  · exact Or.inr <| Or.inr <| Or.inr ⟨q, s⟩
+
+example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by
+  rintro ⟨p | q, r | s⟩
+  all_goals simp_all -- we will learn about this technique later 
 
 example (P Q R S : Prop) : ((P ∧ Q) ∨ R) ∧ S → (P ∨ R) ∧ (Q ∨ R) ∧ S := by
-  sorry
+  rintro ⟨⟨p, q⟩ | r, s⟩
+  · constructor
+    · left; exact p
+    · constructor
+      · left; exact q
+      · exact s
+  · exact ⟨Or.inr r, Or.inr r, s⟩ 
+
+/-
+## Working with Equivalence (↔) in the goal
+
+To prove `P ↔ Q`, we need to prove both `P → Q` and `Q → P`. We can:
+
+- Use `apply Iff.intro` explicitly
+- Use `constructor` as shorthand
+- Use angle bracket notation with two lambda expressions
+-/
+
+-- Explicit proof using Iff.intro
+example (P Q : Prop) (p_to_q : P → Q) (q_to_p : Q → P) : P ↔ Q := by
+  apply Iff.intro
+  · exact p_to_q
+  · exact q_to_p
+
+-- Using constructor
+example (P Q : Prop) (p_to_q : P → Q) (q_to_p : Q → P) : P ↔ Q := by
+  constructor
+  · exact p_to_q
+  · exact q_to_p
+
+-- Angle bracket notation for term mode
+example (P Q : Prop) (p_to_q : P → Q) (q_to_p : Q → P) : P ↔ Q :=
+  Iff.intro p_to_q q_to_p
+
+example (P Q : Prop) (p_to_q : P → Q) (q_to_p : Q → P) : P ↔ Q :=
+  ⟨p_to_q, q_to_p⟩
+
+
+/-
+## Using Equivalence in hypotheses
+
+To use `h : P ↔ Q`, we can:
+- Access forward/backward directions with `h.mp` / `h.mpr`
+- Use `rw` to rewrite equivalents
+- Destructure with `obtain` or `cases`
+-/
+
+-- Using `.mp` (modus ponens) and `.mpr` (reverse)
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := by
+  exact h.mp p
+
+example (P Q : Prop) (h : P ↔ Q) (q : Q) : P := by
+  exact h.mpr q
+
+-- In term mode this just looks like
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := h.mp p
+example (P Q : Prop) (h : P ↔ Q) (q : Q) : P := h.mpr q
+
+-- Alternatively we can use `1` and `2` to access the components
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := by
+  exact h.1 p
+
+example (P Q : Prop) (h : P ↔ Q) (q : Q) : P := by
+  exact h.2 q
+
+-- As already noted previously, we can rewrite with equivalences
+example (P Q R : Prop) (h : P ↔ Q) (q_to_r : Q → R) : P → R := by
+  rw [h]
+  exact q_to_r
+
+-- We can also destructure equivalences using `obtain`
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := by
+  obtain ⟨p_to_q, _⟩ := h
+  exact p_to_q p
+
+-- `cases` and `rcases` can also destructure equivalences
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := by
+  rcases h with ⟨p_to_q, _⟩
+  exact p_to_q p
+
+example (P Q : Prop) (h : P ↔ Q) (p : P) : Q := by
+  cases h with
+  | intro mp mpr => exact mp p
+
+/-
+## The `trans` tactic
+
+The `trans` tactic allows us to chain together equivalences (or equalities) by introducing an intermediate statement.
+In the following example, we prove that `B ↔ C` by chaining three equivalences:
+
+- From `A ↔ B` we get `B ↔ A` by symmetry,
+- Then we use `A ↔ D`,
+- And finally, from `C ↔ D` we get `D ↔ C` by symmetry.
+
+This lets us conclude `B ↔ C`. It is used around 400 times in mathlib.
+-/
+
+example (A B C D : Prop)
+  (h₁ : C ↔ D) (h₂ : A ↔ B) (h₃ : A ↔ D) : B ↔ C := by
+  trans A
+  · exact h₂.symm
+  · clear h₂
+    trans D
+    · exact h₃
+    · exact h₁.symm 
+
+example (A B C D : Prop)
+  (h₁ : C ↔ D) (h₂ : A ↔ B) (h₃ : A ↔ D) : B ↔ C := by
+  rw [h₁, h₃.symm, h₂]
+
+/-
+## The Following Are Equivalent (TFAE)
+
+The `TFAE` tactic is used to state that all propositions in a list are equivalent.
+This is useful when you have multiple propositions that are logically equivalent
+and you want to prove their equivalence in a structured way.
+
+Key tactics:
+- `tfae_have` to introduce equivalences between propositions
+- `tfae_finish` to conclude the proof of equivalence
+
+It is used around 300 times in mathlib.
+-/
+
+example (P₁ P₂ P₃ : Prop) (h₁ : P₁ → P₂) (h₂ : P₂ → P₃) (h₃ : P₃ → P₁) : [P₁, P₂, P₃].TFAE := by
+  tfae_have 1 → 2 := by
+    intro h
+    exact h₁ h
+  tfae_have 2 → 3 := fun h => h₂ h
+  tfae_have 3 → 1 := fun h => h₃ h
+  tfae_finish
+
+
+/-
+# Exercises
+-/
+
+-- Prove the associativity of disjunction: `(P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R)`.
+example (P Q R : Prop) : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := by sorry
+
+-- Prove that `OR` distributes over `AND` in both directions.
+example (P Q R : Prop) : (P ∧ Q) ∨ R ↔ (P ∨ R) ∧ (Q ∨ R) := by sorry
