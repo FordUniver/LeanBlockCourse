@@ -223,3 +223,89 @@ To use `h : P ∨ Q`, we can:
 - Use `cases` and `rcases`
 - Use `obtain` with pattern matching
 -/
+
+-- Using `Or.elim` directly
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  apply Or.elim h
+  · exact p_to_r
+  · exact q_to_r
+
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := 
+  Or.elim h p_to_r q_to_r
+
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  apply @Or.elim P Q R
+  · exact h
+  · exact p_to_r
+  · exact q_to_r
+
+-- Basic pattern matching with cases
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  cases h
+  · exact p_to_r (by assumption)
+  · exact q_to_r (by assumption)
+
+-- Using cases with pattern matching notation
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  cases h with
+  | inl p => exact p_to_r p
+  | inr q => exact q_to_r q
+
+-- Using `rcases` for OR
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  rcases h with p | q
+  · exact p_to_r p
+  · exact q_to_r q
+  
+-- Using `cases'` for OR
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  cases' h with p q
+  · exact p_to_r p
+  · exact q_to_r q
+
+-- Using obtain for OR
+example (P Q R : Prop) (h : P ∨ Q) (p_to_r : P → R) (q_to_r : Q → R) : R := by
+  obtain p | q := h
+  · exact p_to_r p
+  · exact q_to_r q
+
+/-
+## Working with nested structures
+
+For more complex structures, we can:
+- Use `rcases` for deep pattern matching
+- Use `obtain` with nested patterns
+-/
+
+-- Nested cases
+example (P Q R : Prop) (h : P ∧ (Q ∧ R)) : Q := by
+  cases h with
+  | intro p qr => 
+    cases qr with
+    | intro q r => exact q
+
+example (P Q R : Prop) (h : P ∧ (Q ∧ R)) : Q := h.right.left
+
+-- Using obtain with nested patterns
+example (P Q R : Prop) (h : P ∧ Q ∧ R) : Q := by
+  obtain ⟨p, ⟨q, r⟩⟩ := h  -- ⟨p, q, r⟩ would also work here
+  exact q
+
+example (P Q R : Prop) (h : (P ∧ Q) ∧ R) : Q := by
+  obtain ⟨⟨p, q⟩, r⟩ := h  -- ⟨p, q, r⟩ would NOT work here
+  exact q
+
+-- Using rcases
+example (P Q R : Prop) (h : (P ∧ Q) ∧ R) : Q := by
+  rcases h with ⟨⟨_, q⟩, _⟩
+  exact q
+
+/-
+# Exercoise
+-/
+
+example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by sorry
+  sorry
+
+example (P Q R S : Prop) : ((P ∧ Q) ∨ R) ∧ S → (P ∨ R) ∧ (Q ∨ R) ∧ S := by
+  sorry
