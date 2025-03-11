@@ -304,7 +304,7 @@ example (P Q R : Prop) (h : (P ∧ Q) ∧ R) : Q := by
 # Exercoise
 -/
 
-example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by sorry
+example (P Q R S : Prop) : (P ∨ Q) ∧ (R ∨ S) → (P ∧ R) ∨ (P ∧ S) ∨ (Q ∧ R) ∨ (Q ∧ S) := by
   sorry
 
 example (P Q R S : Prop) : ((P ∧ Q) ∨ R) ∧ S → (P ∨ R) ∧ (Q ∨ R) ∧ S := by
