@@ -144,7 +144,82 @@ example (P Q : Prop) : (P ∧ Q) → P := fun ⟨p, _⟩ => p
 
 -- Prove that if `P → Q` and `P → R`, then `P → (Q ∧ R)`.
 example (P Q R : Prop) (h₁ : P → Q) (h₂ : P → R) : P → (Q ∧ R) := by
-  sorry
+  intro p
+  constructor
+  · exact h₁ p
+  · exact h₂ p
+
+-- The dots and indentation are not necessary but structure the proof for readability
+example (P Q R : Prop) (h₁ : P → Q) (h₂ : P → R) : P → (Q ∧ R) := by
+  intro p
+  constructor
+  exact h₁ p
+  exact h₂ p
 
 -- Also give a term mode version of this
-example (P Q R : Prop) (h₁ : P → Q) (h₂ : P → R) : P → (Q ∧ R) := sorry
+example (P Q R : Prop) (h₁ : P → Q) (h₂ : P → R) : P → (Q ∧ R) := fun p => ⟨h₁ p, h₂ p⟩
+
+/-
+## Intermezzo: The `repeat`, `all_goals`, `try`, and `<;>` tactics
+
+- `repeat tac` repeatedly applies `tac` to the main goal until it fails.
+- `all_goals tac` runs `tac` on each goal, concatenating the resulting goals, if any.
+- `try tac` attempts to run `tac` without causing failure if it does not apply.
+- `tac <;> tac'` runs `tac` on the main goal and `tac'` on each produced goal.
+
+They are respectively used around 150, 500, 400, and 7000 times in mathlib.
+-/
+
+example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  cases h
+  constructor
+  repeat assumption
+
+example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  cases h
+  constructor
+  all_goals assumption
+
+example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  cases h
+  constructor <;> assumption
+
+example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  cases h; constructor <;> assumption -- you can in fact replace any line break with a semicolon
+
+example (P Q : Prop) (h : P ∧ Q) : Q ∧ P := by
+  constructor
+  all_goals
+  try exact h.1
+  try exact h.2
+
+/-
+## Working with OR (∨) in the goal
+
+To prove P ∨ Q, we need to prove either P or Q. We can:
+
+- Use `apply Or.inl`/`Or.inr` explicitly
+- Use `left`/`right` as shorthand
+-/
+
+-- Most explicit way using apply
+example (P Q : Prop) (p : P) : P ∨ Q := by
+  apply Or.inl
+  exact p
+
+-- Term mode for Or.inl
+example (P Q : Prop) (p : P) : P ∨ Q := Or.inl p
+
+-- Using left/right
+example (P Q : Prop) (p : P) : P ∨ Q := by
+  left
+  exact p
+
+/-
+## Working with OR in a hypothesis
+
+To use `h : P ∨ Q`, we can:
+- Use `apply Or.elim` explicitly
+- Use `cases` and `rcases`
+- Use `obtain` with pattern matching
+-/
