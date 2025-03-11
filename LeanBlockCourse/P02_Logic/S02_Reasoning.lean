@@ -223,3 +223,36 @@ example (A B C D E F G H I : Prop)
   refine i ?_
   have b : B := f a
   exact b
+
+
+
+-- There are many other possible proofs:
+example (A B C D E F G H I : Prop) 
+    (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
+    (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
+    (q : H → G) (r : H → I) (a : A) : I := by
+  refine (p ∘ l ∘ i ∘ f) ?_
+  exact a
+
+example (A B C D E F G H I : Prop) 
+    (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
+    (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
+    (q : H → G) (r : H → I) (a : A) : I := by
+  apply (p ∘ l ∘ i ∘ f) 
+  exact a
+
+example (A B C D E F G H I : Prop) 
+    (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
+    (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
+    (q : H → G) (r : H → I) (a : A) : I := by
+  exact (p ∘ l ∘ i ∘ f) a
+
+example (A B C D E F G H I : Prop) 
+    (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
+    (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
+    (q : H → G) (r : H → I) (a : A) : I := (p ∘ l ∘ i ∘ f) a
+
+example (A B C D E F G H I : Prop) 
+    (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
+    (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
+    (q : H → G) (r : H → I) (a : A) : I := p <| l <| i <| f a
