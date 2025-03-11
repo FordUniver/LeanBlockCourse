@@ -195,16 +195,31 @@ example (P Q : Prop) (f : P → Q) (p : P) : Q := by
 example (A B C D E F G H I : Prop) 
     (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
     (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
-    (q : H → G) (r : H → I) (a : A) : I := by sorry
+    (q : H → G) (r : H → I) (a : A) : I := by 
+  suffices F by exact p this
+  suffices e : E by exact l e
+  suffices B by exact i this
+  exact f a
 
 -- Use only `refine` to work backwards from the goal:
 example (A B C D E F G H I : Prop) 
     (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
     (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
-    (q : H → G) (r : H → I) (a : A) : I := by sorry
+    (q : H → G) (r : H → I) (a : A) : I := by
+  refine p ?_
+  refine l ?_
+  refine i ?_
+  refine f ?_
+  exact a
 
--- Do a proof that comines `exact`,`have`, `suffices`, `refine`, and `apply`
+-- Do a proof that comines `clear`, `exact`, `have`, `suffices`, `refine`, and `apply`
 example (A B C D E F G H I : Prop) 
     (f : A → B) (g : C → B) (h : A → D) (i : B → E) (j : C → F) 
     (k : E → D) (l : E → F) (m : G → D) (n : H → E) (p : F → I) 
-    (q : H → G) (r : H → I) (a : A) : I := by sorry
+    (q : H → G) (r : H → I) (a : A) : I := by 
+  clear g
+  apply p
+  suffices E by exact l this
+  refine i ?_
+  have b : B := f a
+  exact b
