@@ -362,3 +362,94 @@ example (P Q : Prop) (h : Q ↔ P) : P → Q := by
 example (P Q : Prop) (h : Q ↔ P) : P → Q := by
   intro p
   exact h.mpr p
+
+
+
+/-
+# Term Mode and Direct Construction
+
+Lean proofs can be written directly as terms, without tactics. This gives us two distinct
+styles of proving:
+
+1. Tactic Mode (using `by`)
+   - More interactive and easier to write
+   - More flexible and maintainable
+   - Can be slower to compile
+   - Can be less transparent about what's happening
+
+2. Term Mode (direct construction)
+   - Often more concise for simple proofs
+   - More explicit and faster to compile
+   - Can be more brittle to changes in mathlib
+   - Harder or impossible to write for complex proofs
+   - Can be challenging to read for complex proofs
+
+You can see how your tactic proof translates to term mode using:
+`#print "name_of_your_theorem"` though there are some nuances that
+will become more clear when discussing quantifiers.
+
+Some common patterns:
+- `by exact p` becomes just `p`
+- `by intro p; exact f p` becomes `fun p => f p`
+- `by intro p; exact p` becomes `fun p => p` or simply `id`
+- `by rw [h₁] at p; exact p` becomes `(h₁ ▸ p)`,
+
+The last one only works for equality (`=`) in `h₁`, not for equivalence (`↔`).
+
+Around 100,000 proofs out of 320,000 in mathlib are written in tactic mode,
+though this includes proofs of minor facts where term mode is more appropriate.
+-/
+
+lemma id_proof (P Q : Prop) (p : P) (q : Q) : P := by
+  assumption -- or exact p
+
+-- You can print the term mode proof using `#print`
+#print id_proof
+
+lemma id_proof_term (P Q : Prop) (p : P) (q : Q) : P := p 
+
+#print id_proof_term -- same output as #print id_proof
+
+
+-- Identity function in various styles:
+lemma intro_example (P : Prop) : P → P := by  -- tactic mode
+  intro p
+  exact p
+
+#print intro_example
+
+-- First syntax
+example (P : Prop) : P → P := fun p => p
+
+-- Second syntax
+example (P : Prop) : P → P := λ p ↦ p
+
+-- λ p ↦ p is just the identity function
+lemma ex1 (P : Prop) : P → P := id -- have previously already seen `by exact id`
+
+#print ex1 -- technically Lean looks at the term `fun P => id`
+
+-- Lean actually takes all the arguments (things to the left of `:`) and `reverts` them into the goal before formulating the term mode
+lemma ex2 : (P : Prop) → P → P := fun P p => p
+
+example : ex1 = ex2 := rfl
+
+example (P Q R : Prop) (h₁ : Q = P) (h₂ : Q ↔ R) : P ↔ R := by
+  rw [h₁] at h₂
+  exact h₂
+
+-- Sometimes `rw` can be express in term mode through `▸`
+example (P Q R : Prop) (h₁ : Q = P) (h₂ : Q ↔ R) : P ↔ R := h₁ ▸ h₂
+
+
+/-
+# Exercises
+
+Turn all of the previous exercises into term mode proofs.
+-/
+
+-- Chain three implications together: if we can go from `P` to `Q` to `R` to `S`,  then `P → S`
+example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S := sorry
+
+-- Nested implications: if `P` implies `(Q → R)` and `P` implies `Q`, then `P` implies `R`
+example (P Q R : Prop) (h₁ : P → Q → R) (h₂ : P → Q) : P → R := sorry
