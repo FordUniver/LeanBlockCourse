@@ -449,7 +449,26 @@ Turn all of the previous exercises into term mode proofs.
 -/
 
 -- Chain three implications together: if we can go from `P` to `Q` to `R` to `S`,  then `P → S`
-example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S := sorry
+example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S :=
+  fun p => h₃ (h₂ (h₁ p))
+
+example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S :=
+  fun p => h₃ <| h₂ <| h₁ p
+
+example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S :=
+  fun  p => (h₃ ∘ h₂ ∘ h₁) p
+
+example (P Q R S : Prop) (h₁ : P → Q) (h₂ : Q → R) (h₃ : R → S) : P → S :=
+  h₃ ∘ h₂ ∘ h₁
 
 -- Nested implications: if `P` implies `(Q → R)` and `P` implies `Q`, then `P` implies `R`
-example (P Q R : Prop) (h₁ : P → Q → R) (h₂ : P → Q) : P → R := sorry
+example (P Q R : Prop) (h₁ : P → Q → R) (h₂ : P → Q) : P → R :=
+  fun p => (h₁ p) (h₂ p)
+
+-- This fails because `▸` only works for equality, not for equivalence
+example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R := by
+  rw [h₁.symm] at h₂
+  exact h₂
+
+-- example (P Q R : Prop) (h₁ : P ↔ Q) (h₂ : Q ↔ R) : P ↔ R :=
+--   (h₁.symm ▸ h₂)
