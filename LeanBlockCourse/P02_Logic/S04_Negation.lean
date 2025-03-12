@@ -6,6 +6,7 @@ https://adam.math.hhu.de/#/g/trequetrum/lean4game-logic
 
 import Mathlib.Tactic.Basic
 import Mathlib.Data.Nat.Basic
+import Mathlib.Tactic.NthRewrite
 
 /-
 # Negation and Classical Logic
@@ -325,3 +326,42 @@ example (P Q : Prop) : (P → Q) → (¬P → Q) → Q := by
 -- Combine by_cases with push_neg for this classical tautology
 example (P : Prop) : ¬(P ↔ ¬P) := by
   sorry
+
+
+
+/-
+## Revisiting `rw` and `nth_rw`
+
+In the following examples, we further explore rewriting tactics in Lean.
+Each example shows a different approach to rewriting expressions involving double negation
+(using the `not_not` lemma) to simplify our goals.
+-/
+
+-- Example 1: Automatically simplify the goal by pushing negations and finish by reflexivity.
+example (A B C : Prop) : (A ∧ (¬¬C)) ∨ (¬¬B) ∧ C ↔ (A ∧ C) ∨ B ∧ (¬¬C) := by
+  push_neg
+  rfl     
+
+-- Example 2: Use the `rw` tactic to explicitly rewrite all occurrences of double negation with `not_not`
+example (A B C : Prop) : (A ∧ (¬¬C)) ∨ (¬¬B) ∧ C ↔ (A ∧ C) ∨ B ∧ (¬¬C) := by
+  rw [not_not]
+  rw [not_not]
+
+-- Example 3: Use the `rw` tactic with more explicit arguments to control the rewrite order.
+example (A B C : Prop) : (A ∧ (¬¬C)) ∨ (¬¬B) ∧ C ↔ (A ∧ C) ∨ B ∧ (¬¬C) := by
+  rw [@not_not B]
+  rw [@not_not C]
+
+-- Example 4: Target specific occurrences with `nth_rewrite` to control the rewrite order.
+example (A B C : Prop) : (A ∧ (¬¬C)) ∨ (¬¬B) ∧ C ↔ (A ∧ C) ∨ B ∧ (¬¬C) := by
+  nth_rewrite 1 [not_not]
+  nth_rewrite 2 [not_not]
+  nth_rewrite 1 [not_not]
+  rfl                    
+
+-- Example 5: Use explicit type annotations with `nth_rewrite` for clarity on which lemma instance to use.
+example (A B C : Prop) : (A ∧ (¬¬C)) ∨ (¬¬B) ∧ C ↔ (A ∧ C) ∨ B ∧ (¬¬C) := by
+  nth_rewrite 2 [@not_not C]
+  nth_rewrite 1 [@not_not B]
+  nth_rewrite 1 [@not_not C]
+  rfl
