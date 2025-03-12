@@ -83,6 +83,20 @@ example : ∀ (X : Type) (P : X → Prop),
   obtain ⟨x, h_existence, h_uniqueness⟩ := h
   use x 
 
+-- From unique existence (`∃!`) we can deduce existence (`∃`):
+example : ∀ (X : Type) (P : X → Prop),
+  (∃! (x : X), P x) → ∃ (x : X), P x := by
+  intro X P h
+  obtain ⟨x, h_existence, h_uniqueness⟩ := h
+  exact ⟨x, h_existence⟩
+
+#check ExistsUnique 
+
+example : ∀ (X : Type) (P : X → Prop),
+  (∃! (x : X), P x) → ∃ (x : X), P x := 
+  fun _ _ ⟨x, h_existence, _⟩ => Exists.intro x h_existence
+
+
 -- Using the `choose` and `use` tactics:
 example : ∀ (X : Type) (P : X → X → Prop),
   (∀ x : X, ∃ y : X, P x y) → ∃ (f : X → X), ∀ x : X, P x (f x) := by
@@ -108,6 +122,7 @@ example (X Y : Type) (f g : X → Y) (h : ∀ x : X, f x = g x) : f = g := by
 /- 
 ## Exercises
 -/
+
 
 -- Prove that `∀ x, (p x ∧ q x) ↔ ((∀ x, p x) ∧ (∀ x, q x))`.
 example (α : Type) (p q : α → Prop) : (∀ x : α, p x ∧ q x) ↔ ((∀ x : α, p x) ∧ (∀ x : α, q x)) := by
@@ -138,3 +153,33 @@ example (X : Type) (R : X → X → Prop) (h : ∀ x, ∃ y, R x y) :
 -- Prove that `(∃ x, P x ∧ Q x) → (∃ x, P x) ∧ (∃ x, Q x)`.
 example (α : Type) (P Q : α → Prop) : (∃ x, P x ∧ Q x) → (∃ x, P x) ∧ (∃ x, Q x) := by
   sorry
+
+/-
+## Remark
+
+Looking at mathlib, you will find the following definitions:
+
+
+inductive Exists {α : Sort u} (p : α → Prop) : Prop where
+  | intro (w : α) (h : p w) : Exists p
+
+def ExistsUnique (p : α → Prop) := ∃ x, p x ∧ ∀ y, p y → y = x
+
+For ∀ you will not find such a clear definition since it is notation.
+However the following shows that we essentially have three ways of expressing
+the same:
+-/
+
+variable (X : Type) (P : X → Prop)
+
+axiom f1 (x : X) : P x
+
+axiom f2 : ∀ (x : X), P x
+
+axiom f3 : (x : X) → P x
+
+example : f1 = f2 := rfl
+
+example : f1 = f3 := rfl
+
+example : f2 = f3 := rfl
