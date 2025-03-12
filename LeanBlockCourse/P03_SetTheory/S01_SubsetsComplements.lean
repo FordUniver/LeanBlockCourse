@@ -96,24 +96,116 @@ example (S : Set α) : ∅ ⊆ S := by
 
 -- Prove that if `S ⊆ T` and `x ∈ S`, then `x ∈ T`.
 example (x : α) (S T : Set α) (h₁ : S ⊆ T) (h₂ : x ∈ S) : x ∈ T := by
-  sorry
+  rw [subset_def] at h₁
+  have xt := h₁ x h₂
+  exact xt 
+
+example (x : α) (S T : Set α) (h₁ : S ⊆ T) (h₂ : x ∈ S) : x ∈ T := h₁ h₂
 
 -- Prove that if `S ⊆ T` and `T ⊆ R`, then `S ⊆ R`.
-example (x : α) (S T R : Set α) (h₁ : S ⊆ T) (h₂ : T ⊆ R) (h₃ : x ∈ S) : x ∈ R := by
-  sorry
+example (x : α) (S T R : Set α) (h₁ : S ⊆ T) (h₂ : T ⊆ R) (h₃ : x ∈ S) : x ∈ R :=
+  h₂ <| h₁ h₃
 
 -- Prove that if `S ⊆ T` and `T ⊆ R`, then `S ⊆ R`.
 example {x : α} {S T R : Set α} (h₁ : S ⊆ T) (h₂ : x ∈ T → x ∈ R) : x ∈ S → x ∈ R := by
-  sorry
+  intro xs
+  have xt := h₁ xs
+  have xr := h₂ xt
+  exact xr
+
+example {x : α} {S T R : Set α} (h₁ : S ⊆ T) (h₂ : x ∈ T → x ∈ R) : x ∈ S → x ∈ R :=
+  fun xs => (h₂ (h₁ xs))
 
 -- Prove that if `S ⊆ T`, then for any `x ∉ T`, we have `x ∉ S`.
 example (S T : Set α) (h : S ⊆ T) (x : α) (hx : x ∉ T) : x ∉ S := by
-  sorry
+  by_contra xs
+  have xt := h xs
+  contradiction
+
+example (S T : Set α) (h : S ⊆ T) (x : α) (hx : x ∉ T) : x ∉ S := fun xs => hx (h xs)
 
 -- Prove that if `S ⊂ T` and `T ⊆ R`, then `S ⊂ R`.
 example {S T R : Set α} (h₁ : S ⊂ T) (h₂ : T ⊆ R) : S ⊂ R := by
-  sorry
+  obtain ⟨st, nts⟩ := h₁
+  constructor
+  · exact Subset.trans st h₂
+  · intro rs
+    have ts := Subset.trans h₂ rs
+    exact nts ts
+
+example {S T R : Set α} (h₁ : S ⊂ T) (h₂ : T ⊆ R) : S ⊂ R :=
+  ⟨Subset.trans h₁.1 h₂, fun rs => h₁.2 (Subset.trans h₂ rs)⟩ 
 
 -- Every set has a subset
 example (S : Set α) : ∃ T, T ⊆ S := by
+  use ∅
+  exact empty_subset S
+
+example (S : Set α) : ∃ T, T ⊆ S := by
+  use S 
+
+
+
+/-
+## Set equality
+-/
+
+-- `S = T` iff `x ∈ S ↔ x ∈ T` for all `x`
+lemma ext_iff {S T : Set α} : S = T ↔ ∀ x, x ∈ S ↔ x ∈ T := Set.ext_iff
+
+-- The `ext` tactic can be used to prove equalities between sets
+example (S : Set α) : S = S := by
+  ext x
+  rfl
+
+
+/-
+## Complements
+
+For a set `S`, the complement `Sᶜ` is defined as the set of all elements of type
+`α` that are not contained in `S`.
+-/
+
+-- `x ∈ Sᶜ` iff `x ∉ S`.
+lemma mem_compl_iff (S : Set α) (x : α) : x ∈ Sᶜ ↔ x ∉ S := by rfl
+
+example (S : Set α) : Sᶜ = compl S := rfl 
+
+/-
+## Exercises
+-/
+
+lemma Subset.antisymm {S T : Set α} (h₁ : S ⊆ T) (h₂ : T ⊆ S) : S = T := by
+  sorry
+
+-- This lemma is actually not in mathlib ...
+-- Prove `S = T` is the same as `S ⊆ T ∧ T ⊆ S`
+lemma eq_eq_sub_sub {S T : Set α} : (S = T) = (S ⊆ T ∧ T ⊆ S) := by
+  sorry
+
+-- ... but this is!
+lemma Subset.antisymm_iff {S T : Set α} : (S = T) ↔ (S ⊆ T ∧ T ⊆ S) := Eq.to_iff eq_eq_sub_sub
+
+-- Prove that if `x ∈ S` and `x ∉ T`, then we cannot have `S ⊆ T`.
+example {S T : Set α} {x : α} (h₁ : x ∈ S) (h₂ : x ∉ T) : ¬S ⊆ T := by
+  sorry
+
+-- Prove that if S ⊆ T, then Tᶜ ⊆ Sᶜ.
+lemma compl_subset_compl_of_subset {S T : Set α} (h₁ : S ⊆ T) : Tᶜ ⊆ Sᶜ := by
+  sorry
+
+-- `compl_compl`: The complement of the complement of `S` is `S`.
+example (S : Set α) : Sᶜᶜ = S := by
+  sorry
+
+-- Equivalence between subset inclusion and inclusion of complements.
+lemma compl_subset_compl (S T : Set α) : Tᶜ ⊆ Sᶜ ↔ S ⊆ T  := by
+  sorry
+
+-- Prove that if `S ⊆ T`, then for any `x ∈ Tᶜ`, we have `x ∈ Sᶜ`.
+example (S T : Set α) (h : S ⊆ T) {x : α} (hx : x ∈ Tᶜ) : x ∈ Sᶜ := by
+  sorry
+
+-- Prove that for any sets `R`, `S`, and `T`, if `R ⊆ S` and `S ⊆ T`, then `Tᶜ ⊆ Rᶜ`.
+example (R S T : Set α) (h₁ : R ⊆ S) (h₂ : S ⊆ T) : Tᶜ ⊆ Rᶜ := by
   sorry
