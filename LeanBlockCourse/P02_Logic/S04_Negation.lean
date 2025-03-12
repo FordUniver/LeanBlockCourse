@@ -317,16 +317,52 @@ example (P Q : Prop) : (P → Q) → (¬P → Q) → Q := by
 
 -- Prove contrapositive equivalence using multiple methods
 example (P Q : Prop) : (P → Q) ↔ (¬Q → ¬P) := by
-  sorry
+  constructor
+  · intro pq
+    intro nq
+    by_cases this : P
+    · have q : Q := pq this
+      exfalso
+      exact nq q
+    · exact this
+  · intro nqnp
+    intro p
+    by_cases this : Q
+    · exact this
+    · have np : ¬P := nqnp this
+      exfalso
+      exact np p
+
+example (P Q : Prop) : (P → Q) ↔ (¬Q → ¬P) := by
+  constructor
+  · intro pq nq p
+    exact nq (pq p)
+  · intro nqnp p
+    by_contra nq
+    exact nqnp nq p
+
+example (P Q : Prop) : (P → Q) ↔ (¬Q → ¬P) := not_imp_not.symm -- this result is already in mathlib as `not_imp_not`
 
 -- Prove using case distinction on `P`
 example (P Q : Prop) : (P → Q) → (¬P → Q) → Q := by
-  sorry
+  intro pq npq
+  by_cases this : P
+  · exact pq this
+  · exact npq this
 
 -- Combine by_cases with push_neg for this classical tautology
 example (P : Prop) : ¬(P ↔ ¬P) := by
-  sorry
+  push_neg
+  by_cases this : P
+  · left; exact ⟨this, this⟩
+  · right; exact ⟨this, this⟩ 
 
+example (P : Prop) : ¬(P ↔ ¬P) := by
+  push_neg
+  by_cases this : P
+  all_goals simp [this]
+
+example (P : Prop) : ¬(P ↔ ¬P) := iff_not_self
 
 
 /-
