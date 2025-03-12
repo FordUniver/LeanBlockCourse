@@ -178,13 +178,9 @@ example (S : Set α) : Sᶜ = compl S := rfl
 lemma Subset.antisymm {S T : Set α} (h₁ : S ⊆ T) (h₂ : T ⊆ S) : S = T := by
   sorry
 
--- This lemma is actually not in mathlib ...
--- Prove `S = T` is the same as `S ⊆ T ∧ T ⊆ S`
-lemma eq_eq_sub_sub {S T : Set α} : (S = T) = (S ⊆ T ∧ T ⊆ S) := by
+--Prove `S = T` is the same as `S ⊆ T ∧ T ⊆ S`
+lemma Subset.antisymm_iff {S T : Set α} : (S = T) ↔ (S ⊆ T ∧ T ⊆ S) := by
   sorry
-
--- ... but this is!
-lemma Subset.antisymm_iff {S T : Set α} : (S = T) ↔ (S ⊆ T ∧ T ⊆ S) := Eq.to_iff eq_eq_sub_sub
 
 -- Prove that if `x ∈ S` and `x ∉ T`, then we cannot have `S ⊆ T`.
 example {S T : Set α} {x : α} (h₁ : x ∈ S) (h₂ : x ∉ T) : ¬S ⊆ T := by
