@@ -21,9 +21,8 @@
 
 * `lake init ProjectName math` sets up a project with mathlib as a dependency in the current folder.
 * `lake build` builds the project.
-* `pkill -f lean` kills the running Lean server.
-* `lake exe cache get` pulls the pre-compiled mathlib binaries.
-* In the worst casem deleting the `.lake` folder and running `lake clean` can fix many issues.
+* If your info view shows that it is compiling a lot of files from mathlib, then (1) run `pkill -f lean` (MacOS / Linux) or `Stop-Process -Name *lean* -Force` (Windows) to kill the running Lean processes, (2) run `lake exe cache get` to download the mathlib binaries again, and finally (3) restart the Lean server by clicking on the `∀` button in VS Code and choosing `Server: Restart Server`.
+* In the worst case, deleting the `.lake` folder and running `lake clean` can fix many issues.
 
 ### Versioning with `git`
 
