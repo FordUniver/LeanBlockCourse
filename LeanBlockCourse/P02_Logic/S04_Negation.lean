@@ -99,12 +99,13 @@ example (n : ℕ) (h : n = 10) (g : n ≠ 10) : n = 42 := by
 
 
 /-
-## The `push_neg` Tactic
+## The `push_neg` Tactic (Classical logic)
 
 Normalizes negated expressions by pushing negation inward:
 
 - Converts `¬(P ∧ Q)` to `¬P ∨ ¬Q`
 - Converts `¬(P → Q)` to `P ∧ ¬Q`
+- Converts `¬¬P` to `P` (uses law of excluded middle: `P ∨ ¬P`)
 - Simplifies nested negations
 -/
 
@@ -155,19 +156,172 @@ example (P Q : Prop) : ¬(P → Q) ↔ (P ∧ ¬Q) := by
 
 -- Prove double negation introduction: `P → ¬¬P`.
 example (P : Prop) : P → ¬¬P := by
-  sorry
+  intro p
+  push_neg
+  exact p
+
+example (P : Prop) : P → ¬¬P := by
+  intro p
+  suffices ¬P → False by exact this -- remember that `¬¬P` is just `¬P → False`
+  intro np 
+  contradiction
+
+example (P : Prop) : P → ¬¬P := by
+  intro p np
+  exact np p -- remember that `¬P` is just `P → False`
+
+example (P : Prop) : P → ¬¬P := fun p np => np p
 
 
 -- Prove that if `¬¬P` holds and `P → Q` holds, then `¬¬Q` holds.
 example (P Q : Prop) (p : ¬¬P) (f : P → Q) : ¬¬Q := by
-  sorry
+  push_neg -- applies to the goal
+  push_neg at p -- applies to assumption `p`
+  exact f p
 
+example (P Q : Prop) (p : ¬¬P) (f : P → Q) : ¬¬Q := by
+  push_neg at * -- applies it to all assumptions and the goal
+  exact f p
+
+
+-- Apply the associativity of or as well as and
+example (P Q R : Prop) 
+    (h : P ∨ Q ∨ R → ¬(P ∧ Q ∧ R)) : (P ∨ Q) ∨ R → ¬((P ∧ Q) ∧ R) := by
+  push_neg at *
+  intro _ pq
+  obtain ⟨p, q⟩ := pq
+  exact h (by left; exact p) p q
 
 example (P Q R : Prop) 
     (h : P ∨ Q ∨ R → ¬(P ∧ Q ∧ R)) : (P ∨ Q) ∨ R → ¬((P ∧ Q) ∧ R) := by
-  sorry
+  push_neg at *
+  intro pqr ⟨p, q⟩
+  have : P ∨ (Q ∨ R) := or_assoc.mp pqr -- we can find this with `exact?`
+  exact h this p q 
+
+example (P Q R : Prop) 
+    (h : P ∨ Q ∨ R → ¬(P ∧ Q ∧ R)) : (P ∨ Q) ∨ R → ¬((P ∧ Q) ∧ R) := by
+  rw [or_assoc, and_assoc]
+  assumption
 
 
 -- Proof this using `suffices`
-example (P Q : Prop) (h : P → ¬ Q) (k₁ : P) (k₂ : Q) : False := by
+example (P Q : Prop) (h : P → ¬ Q) (p : P) (q : Q) : False := by
+  suffices ¬Q by contradiction
+  exact h p
+
+example (P Q : Prop) (h : P → ¬ Q) (p : P) (q : Q) : False := by
+  have := h p
+  have := this q
+  exact this
+
+example (P Q : Prop) (h : P → ¬ Q) (p : P) (q : Q) : False :=
+  h p q -- `exact? directly gives us this term
+
+
+/-
+## Classical Reasoning with `by_contra`
+
+Enables proof by contradiction in classical logic:
+
+1. Assume the negation of the goal
+2. Derive a contradiction
+3. Conclude the original goal
+-/
+
+-- We already know that we can resolve this with `push_neg`
+example (P : Prop) : ¬¬P → P := by
+  push_neg
+  exact id
+
+-- But let's do a proof by contradiction
+example (P : Prop) : ¬¬P → P := by
+  intro nnp
+  by_contra np
+  contradiction
+
+example (P : Prop) : ¬¬P → P := by
+  intro nnp
+  by_contra np
+  exact nnp np
+
+
+-- Direct application of by_contra with hypothesis derivation
+example (P Q : Prop) (g : P → Q) (nq : ¬Q) : ¬P := by
+  by_contra p
+  have q : Q := g p
+  contradiction
+
+example (P Q : Prop) (g : P → Q) (nq : ¬Q) : ¬P := by
+  by_contra p
+  exact nq (g p)
+
+
+-- Since ¬P is P → False, we can directly apply the implication
+example (P Q : Prop) (g : P → Q) (nq : ¬Q) : ¬P := by
+  -- suffices P → False by exact this
+  intro p
+  exact nq (g p)
+
+example (P Q : Prop) (g : P → Q) (nq : ¬Q) : ¬P := fun p => nq (g p)
+
+
+
+/-
+## Classical Reasoning with `by_cases`
+
+The `by_cases` tactic allows classical case analysis on any proposition:
+
+- Splits the proof into two cases: one where the proposition is true, and one where it's false
+- Particularly useful with excluded middle (`P ∨ ¬P`) in classical logic
+- Often combined with `push_neg` for handling negations
+
+This tactic is used around 1,200 times in mathlib.
+-/
+
+
+-- Basic usage: proving a simple disjunction
+example (P : Prop) : P ∨ ¬P := by
+  exact Classical.em P -- `Classical.em` is exact the law of the excluded middle
+
+example (P : Prop) : P ∨ ¬P := by
+  by_cases p : P
+  · left; exact p
+  · right; exact p 
+
+-- `by_cases` just uses the law of excluded middle
+example (P : Prop) : P ∨ ¬P := by
+  have p_or_np := Classical.em P
+  cases p_or_np with
+  | inl p => left; exact p
+  | inr np => right; exact np
+
+example (P : Prop) : P ∨ ¬P := by
+  rcases em P with (p | np)
+  · left; exact p
+  · right; exact p
+
+
+-- Using case analysis with implications
+example (P Q : Prop) : (P → Q) → (¬P → Q) → Q := by
+  intro pq npq
+  by_cases h : P
+  · exact pq h
+  · exact npq h
+
+/-
+## Exercises
+-/
+
+
+-- Prove contrapositive equivalence using multiple methods
+example (P Q : Prop) : (P → Q) ↔ (¬Q → ¬P) := by
+  sorry
+
+-- Prove using case distinction on `P`
+example (P Q : Prop) : (P → Q) → (¬P → Q) → Q := by
+  sorry
+
+-- Combine by_cases with push_neg for this classical tautology
+example (P : Prop) : ¬(P ↔ ¬P) := by
   sorry
