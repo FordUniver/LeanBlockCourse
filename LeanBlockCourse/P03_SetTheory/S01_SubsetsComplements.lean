@@ -209,3 +209,17 @@ example (S T : Set α) (h : S ⊆ T) {x : α} (hx : x ∈ Tᶜ) : x ∈ Sᶜ := 
 -- Prove that for any sets `R`, `S`, and `T`, if `R ⊆ S` and `S ⊆ T`, then `Tᶜ ⊆ Rᶜ`.
 example (R S T : Set α) (h₁ : R ⊆ S) (h₂ : S ⊆ T) : Tᶜ ⊆ Rᶜ := by
   sorry
+
+
+
+/-
+## Remark
+
+Our notion of set builds on DTT, so Sets are in fact just an inductive
+type over some base type. This means every set always has a type associated
+with it, even the empty set(s)! So the following doesn't work, not because 
+it isn't true but because Lean's type check fails when you try to compare 
+two sets of (possibly) different underlying types:
+
+example (X Y : Type) : (∅ : Set X) = (∅ : Set Y) := by ...
+-/
