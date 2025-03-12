@@ -95,3 +95,79 @@ example (n : ℕ) (h : n ≠ n) : n = 37 := by
 example (n : ℕ) (h : n = 10) (g : n ≠ 10) : n = 42 := by
   exfalso        -- Manual mode
   exact g h
+
+
+
+/-
+## The `push_neg` Tactic
+
+Normalizes negated expressions by pushing negation inward:
+
+- Converts `¬(P ∧ Q)` to `¬P ∨ ¬Q`
+- Converts `¬(P → Q)` to `P ∧ ¬Q`
+- Simplifies nested negations
+-/
+
+example (P : Prop) : ¬¬P → P := by
+  push_neg
+  exact id
+
+-- Simple example showing push_neg in action
+example (P Q : Prop) : ¬(P ∧ Q) → (¬P ∨ ¬Q) := by
+  intro h
+  push_neg at h
+  by_cases hP : P
+  · right
+    exact h hP
+  · left
+    assumption
+
+-- Pushing negation through conjunction
+example (P Q : Prop) : ¬(P ∧ Q) ↔ (¬P ∨ ¬Q) := by
+  constructor
+  · intro h
+    by_contra h'
+    push_neg at h'  -- Converts `¬(¬P ∨ ¬Q)` to `P ∧ Q`
+    exact h h'
+  · intro h hpq
+    rcases h with np | nq
+    · exact np hpq.1
+    · exact nq hpq.2
+
+-- Pushing negation through implication 
+example (P Q : Prop) : ¬(P → Q) ↔ (P ∧ ¬Q) := by
+  constructor
+  · intro h
+    by_contra h'
+    push_neg at h'  -- Converts `¬(P ∧ ¬Q)` to `¬P ∨ Q`
+    apply h
+    intro p
+    have := h' p
+    exact h' p
+  · intro ⟨p, nq⟩ f
+    exact nq (f p)
+
+
+/-
+## Exercises
+-/
+
+
+-- Prove double negation introduction: `P → ¬¬P`.
+example (P : Prop) : P → ¬¬P := by
+  sorry
+
+
+-- Prove that if `¬¬P` holds and `P → Q` holds, then `¬¬Q` holds.
+example (P Q : Prop) (p : ¬¬P) (f : P → Q) : ¬¬Q := by
+  sorry
+
+
+example (P Q R : Prop) 
+    (h : P ∨ Q ∨ R → ¬(P ∧ Q ∧ R)) : (P ∨ Q) ∨ R → ¬((P ∧ Q) ∧ R) := by
+  sorry
+
+
+-- Proof this using `suffices`
+example (P Q : Prop) (h : P → ¬ Q) (k₁ : P) (k₂ : Q) : False := by
+  sorry
