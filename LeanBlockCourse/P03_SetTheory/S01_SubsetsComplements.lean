@@ -176,37 +176,91 @@ example (S : Set α) : Sᶜ = compl S := rfl
 -/
 
 lemma Subset.antisymm {S T : Set α} (h₁ : S ⊆ T) (h₂ : T ⊆ S) : S = T := by
-  sorry
+  ext x -- same as `rw [Set.ext_iff]; intro x`
+  constructor
+  · intro xs; exact h₁ xs
+  · intro xt; exact h₂ xt
+
+example {S T : Set α} (h₁ : S ⊆ T) (h₂ : T ⊆ S) : S = T := by
+  rw [Set.ext_iff]
+  exact fun x => ⟨fun xs => h₁ xs, fun xt => h₂ xt⟩
 
 --Prove `S = T` is the same as `S ⊆ T ∧ T ⊆ S`
 lemma Subset.antisymm_iff {S T : Set α} : (S = T) ↔ (S ⊆ T ∧ T ⊆ S) := by
-  sorry
+  constructor
+  · intro h
+    rw [h]
+    constructor
+    · intro x xt; exact xt
+    · intro x xs; exact xs
+  · intro ⟨h₁, h₂⟩; exact Subset.antisymm h₁ h₂
+
+example {S T : Set α} : (S = T) ↔ (S ⊆ T ∧ T ⊆ S) := by
+  constructor
+  · intro h
+    rw [h]
+    exact ⟨fun x xt =>  xt, fun x xs =>  xs⟩
+  · intro ⟨h₁, h₂⟩; exact Subset.antisymm h₁ h₂
 
 -- Prove that if `x ∈ S` and `x ∉ T`, then we cannot have `S ⊆ T`.
 example {S T : Set α} {x : α} (h₁ : x ∈ S) (h₂ : x ∉ T) : ¬S ⊆ T := by
-  sorry
+  by_contra st -- or `intro st`
+  have xt :=  st h₁
+  contradiction -- or `exact h₂ xt`
+
+example {S T : Set α} {x : α} (h₁ : x ∈ S) (h₂ : x ∉ T) : ¬S ⊆ T :=
+  fun st => h₂ (st h₁)
 
 -- Prove that if S ⊆ T, then Tᶜ ⊆ Sᶜ.
 lemma compl_subset_compl_of_subset {S T : Set α} (h₁ : S ⊆ T) : Tᶜ ⊆ Sᶜ := by
-  sorry
+  intro x
+  intro xtc
+  rw [mem_compl_iff] -- not necessary since this just uses `rfl`
+  intro h₃
+  exact xtc (h₁ h₃)
+
+example {S T : Set α} (h₁ : S ⊆ T) : Tᶜ ⊆ Sᶜ :=
+  fun _ h₂ h₃ => h₂ (h₁ h₃)
 
 -- `compl_compl`: The complement of the complement of `S` is `S`.
 example (S : Set α) : Sᶜᶜ = S := by
-  sorry
+  ext x
+  repeat rw [mem_compl_iff]
+  push_neg
+  rfl
 
 -- Equivalence between subset inclusion and inclusion of complements.
 lemma compl_subset_compl (S T : Set α) : Tᶜ ⊆ Sᶜ ↔ S ⊆ T  := by
-  sorry
+  constructor
+  · intro h
+    have := compl_subset_compl_of_subset h
+    rw [compl_compl, compl_compl] at this
+    exact this
+  · intro h
+    apply compl_subset_compl_of_subset
+    exact h
+
+example (S T : Set α) : Tᶜ ⊆ Sᶜ ↔ S ⊆ T  := 
+  ⟨fun h₁ => compl_compl S ▸ compl_compl T ▸ compl_subset_compl_of_subset h₁,
+  compl_subset_compl_of_subset⟩
 
 -- Prove that if `S ⊆ T`, then for any `x ∈ Tᶜ`, we have `x ∈ Sᶜ`.
 example (S T : Set α) (h : S ⊆ T) {x : α} (hx : x ∈ Tᶜ) : x ∈ Sᶜ := by
-  sorry
+  rw [mem_compl_iff] at *
+  intro xs 
+  have xt := h xs
+  contradiction
+
+example (S T : Set α) (h : S ⊆ T) {x : α} (hx : x ∈ Tᶜ) : x ∈ Sᶜ :=
+  fun xs => hx (h xs)
 
 -- Prove that for any sets `R`, `S`, and `T`, if `R ⊆ S` and `S ⊆ T`, then `Tᶜ ⊆ Rᶜ`.
 example (R S T : Set α) (h₁ : R ⊆ S) (h₂ : S ⊆ T) : Tᶜ ⊆ Rᶜ := by
-  sorry
+  apply compl_subset_compl_of_subset
+  exact Subset.trans h₁ h₂ 
 
-
+example (R S T : Set α) (h₁ : R ⊆ S) (h₂ : S ⊆ T) : Tᶜ ⊆ Rᶜ :=
+  compl_subset_compl_of_subset (Subset.trans h₁ h₂)
 
 /-
 ## Remark
