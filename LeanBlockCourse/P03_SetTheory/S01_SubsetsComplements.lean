@@ -46,7 +46,6 @@ example {x y : α} : x ∈ Set.singleton y ↔ x = y := by rfl
 -- `{x, y}` constructs the set containing two elements `x` and `y`.
 lemma mem_pair (t x y : α) : t ∈ ({x, y} : Set α) ↔ t = x ∨ t = y := by rfl
 
-
 /-
 ## Subsets
 -/
