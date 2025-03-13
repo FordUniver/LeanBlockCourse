@@ -273,3 +273,22 @@ two sets of (possibly) different underlying types:
 
 example (X Y : Type) : (∅ : Set X) = (∅ : Set Y) := by ...
 -/
+
+
+/-
+## Remark
+-/
+
+#check Set.compl
+
+-- This is the chain of logic how lean thinks about `x ∈ Sᶜ`
+example (x : α) (S : Set α) : x ∈ Sᶜ ↔ x ∈ {a | a ∉ S} := by rfl
+
+example (x : α) (S : Set α) : x ∈ {a | a ∉ S} ↔ x ∉ S := by rfl
+
+example (x : α) (S : Set α) : x ∉ S ↔ ¬(x ∈ S) := by rfl
+
+example (x : α) (S : Set α) : ¬(x ∈ S) ↔ (x ∈ S → False) := by rfl
+
+-- We can  combine all of these into this
+example (x : α) (S : Set α) : x ∈ Sᶜ ↔ (x ∈ S → False) := by rfl
