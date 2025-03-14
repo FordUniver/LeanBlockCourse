@@ -6,6 +6,7 @@ https://adam.math.hhu.de/#/g/leanprover-community/nng4
 import Mathlib.Tactic.Basic
 import Mathlib.Tactic.Cases
 import Mathlib.Tactic.Use
+import Mathlib.Tactic.ByContra
 
 /-
 # Defining the natural numbers in Lean
@@ -14,12 +15,11 @@ import Mathlib.Tactic.Use
 ## The inductive definition of `MyNat`
 -/
 
-
-
 inductive MyNat where
 | zero : MyNat
 | succ : MyNat → MyNat
 
+#check MyNat.noConfusion
 
 namespace MyNat
 
@@ -55,21 +55,39 @@ lemma zero_eq_zero : 0 = zero := rfl
 
 -- 2 = succ (succ 0)
 example : 2 = succ (succ 0) := by
-  sorry
+  rw [two_eq_succ_one, one_eq_succ_zero]
+
+example : 2 = succ (succ 0) := by
+  rw [← one_eq_succ_zero, ← two_eq_succ_one]
+
+example : 2 = succ (succ 0) := rfl 
 
 -- zero is not the successor of any number
 lemma zero_ne_succ (n : MyNat) : 0 ≠ succ n := by
-  sorry
+  intro h
+  contradiction
+
+example (n : MyNat) : 0 ≠ succ n := by
+  by_contra h
+  trivial
+
+example (n : MyNat) : 0 ≠ succ n := by
+  intro h
+  exact MyNat.noConfusion h
+
+example (n : MyNat) : 0 ≠ succ n := MyNat.noConfusion
 
 -- 0 ≠ 1
-lemma zero_ne_one : (0 : MyNat) ≠ 1 := by
-  sorry
+lemma zero_ne_one : (0 : MyNat) ≠ 1 := zero_ne_succ 0
 
 -- 1 ≠ 0
-lemma one_ne_zero : (1 : MyNat) ≠ 0 := by
-  sorry
+lemma one_ne_zero : (1 : MyNat) ≠ 0 := zero_ne_one.symm
 
 -- Any non-zero natural number is the successor of another number
 -- Hint: try the `cases` tactic  
-lemma eq_succ_of_ne_zero {n : MyNat} (h : n ≠ 0) : ∃ m : MyNat, n = succ m := by
-  sorry
+lemma eq_succ_of_ne_zero {n : MyNat}
+(h : n ≠ 0) : ∃ m : MyNat, n = succ m := by
+  cases' n with k
+  · contradiction -- since zero ≠ 0 ↔ False
+  · use k 
+    
