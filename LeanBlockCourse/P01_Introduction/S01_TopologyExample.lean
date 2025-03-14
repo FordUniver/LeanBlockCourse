@@ -1,8 +1,7 @@
 import Mathlib.Topology.Basic
 
 variable {X Y Z : Type*}
-variable [t1 : TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
-
+variable [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
 
 example {f : X → Y} {g: Y → Z}
         (hf : Continuous f) (hg : Continuous g) :
