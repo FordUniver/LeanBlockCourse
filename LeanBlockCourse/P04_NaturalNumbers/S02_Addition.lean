@@ -61,22 +61,86 @@ def add (a b : MyNat) : MyNat :=
   | MyNat.zero => a                -- same as `axiom add_zero'`
   | MyNat.succ d => (add a d).succ -- same as `axiom add_succ'`
 
+#eval add 2 3 
+
 /-
 ## Exercises
 -/
 
 -- x + 2 = x + 2
 example (x : MyNat) : add x 2 = add x 2 := by
-  sorry
+  rfl
 
 -- a + (b + 0) + (c + 0) = a + b + c
 example (a b c : MyNat) : add a (add (add b 0) (add c 0)) = add a (add b c) := by
-  sorry
+  rfl
 
 -- succ n = n + 1
 lemma succ_eq_add_one (n : MyNat) : succ n = add n 1 := by
-  sorry
+  rfl
 
 -- 2 + 2 = 4
 example : add 2 2 = 4 := by
+  rfl
+
+-- In fact, this is how it is done in mathlib
+#check Nat.add_zero
+#check Nat.add_succ
+
+
+/-
+## Using the `+` notation
+-/
+
+instance instAdd : Add MyNat where add := add
+
+example : 2 + 2 = add 2 2 := rfl
+
+/-
+## Comment
+
+We can still prove and then use lemmas `add_zero` and `add_succ`
+-/
+
+lemma add_zero (a : MyNat) : a + 0 = a := rfl
+
+lemma add_succ (a b : MyNat) : a + b.succ = (a + b).succ := rfl
+
+
+/-
+## Proof by induction on an inductive type
+-/
+
+
+-- 0 + n = n proved by induction on n
+lemma zero_add (n : MyNat) : 0 + n = n := by
+  induction' n with k ih
+  · exact add_zero 0
+  · rw [add_succ]
+    rw [ih]
+
+example (n : MyNat) : 0 + n = n := by
+  induction n
+  case zero => rfl
+  case succ n ih => rw [add_succ, ih]
+
+
+/-
+## Exercises
+-/
+
+-- succ n + m = succ (n + m)
+lemma succ_add (n m : MyNat) : succ n + m = succ (n + m)  := by
+  sorry
+
+-- Commutativity of addition: n + m = m + n
+lemma add_comm (n m : MyNat) : n + m = m + n := by
+  sorry
+
+-- Associativity of addition: (n + m) + k = n + (m + k)
+lemma add_assoc (n m k : MyNat) : (n + m) + k = n + (m + k) := by
+  sorry
+
+-- Right commutativity of addition: n + m + k = n + k + m
+lemma add_right_comm (n m k : MyNat) : n + m + k = n + k + m := by
   sorry
