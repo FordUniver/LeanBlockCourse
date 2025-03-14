@@ -62,6 +62,24 @@ example : 2 = succ (succ 0) := by
 
 example : 2 = succ (succ 0) := rfl 
 
+-- Any non-zero natural number is the successor of another number
+-- Hint: try the `cases` tactic  
+lemma eq_succ_of_ne_zero {n : MyNat}
+(h : n ≠ 0) : ∃ m : MyNat, n = succ m := by
+  cases' n with k
+  · contradiction -- since zero ≠ 0 ↔ False
+  · use k 
+    
+/-
+## `noConfusion` and injectivity of `MyNat.succ`
+-/
+
+lemma succ_inj {m n : MyNat} (h : succ n = succ m) : m = n :=
+  MyNat.noConfusion h (fun x => x.symm)
+
+/-
+## Exercises
+-/
 -- zero is not the successor of any number
 lemma zero_ne_succ (n : MyNat) : 0 ≠ succ n := by
   intro h
@@ -82,12 +100,3 @@ lemma zero_ne_one : (0 : MyNat) ≠ 1 := zero_ne_succ 0
 
 -- 1 ≠ 0
 lemma one_ne_zero : (1 : MyNat) ≠ 0 := zero_ne_one.symm
-
--- Any non-zero natural number is the successor of another number
--- Hint: try the `cases` tactic  
-lemma eq_succ_of_ne_zero {n : MyNat}
-(h : n ≠ 0) : ∃ m : MyNat, n = succ m := by
-  cases' n with k
-  · contradiction -- since zero ≠ 0 ↔ False
-  · use k 
-    

@@ -144,3 +144,15 @@ lemma add_assoc (n m k : MyNat) : (n + m) + k = n + (m + k) := by
 -- Right commutativity of addition: n + m + k = n + k + m
 lemma add_right_comm (n m k : MyNat) : n + m + k = n + k + m := by
   sorry
+
+example (n m : MyNat) (h : succ (n + 37) = succ (m + 42)) : n + 37 = m + 42 := by 
+  sorry
+
+example (n m : MyNat) (h1 : n = 37) (h2 : n = 37 → m = 42) : m = 42 := by
+  sorry
+
+example (n : MyNat) (h : n + 1 = 4) : n = 3 := by
+  sorry
+
+example (n m : MyNat) (h1 : n = m) (h2 : n ≠ m) : False := by
+  sorry
