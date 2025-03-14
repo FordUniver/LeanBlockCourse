@@ -76,7 +76,7 @@ example (a b c : MyNat) : add a (add (add b 0) (add c 0)) = add a (add b c) := b
   rfl
 
 -- succ n = n + 1
-lemma succ_eq_add_one (n : MyNat) : succ n = add n 1 := by
+example (n : MyNat) : succ n = add n 1 := by
   rfl
 
 -- 2 + 2 = 4
@@ -95,6 +95,8 @@ example : add 2 2 = 4 := by
 instance instAdd : Add MyNat where add := add
 
 example : 2 + 2 = add 2 2 := rfl
+
+lemma succ_eq_add_one (n : MyNat) : succ n = n + 1 := rfl
 
 /-
 ## Comment
@@ -131,28 +133,65 @@ example (n : MyNat) : 0 + n = n := by
 
 -- succ n + m = succ (n + m)
 lemma succ_add (n m : MyNat) : succ n + m = succ (n + m)  := by
-  sorry
+  induction' m with k ih
+  · rfl
+  · rw [add_succ]
+    rw [ih]
+    rw [← add_succ] 
+
+example (n m : MyNat) : succ n + m = succ (n + m)  := by
+  induction' m with k ih
+  · rfl
+  · repeat rw [add_succ]
+    rw [ih]
 
 -- Commutativity of addition: n + m = m + n
 lemma add_comm (n m : MyNat) : n + m = m + n := by
-  sorry
+  induction' n with k ih
+  · exact zero_add m
+  · rw [add_succ, succ_add, ih]
 
+example (n m : MyNat) : n + m = m + n := by
+  induction' n with k ih
+  · rw [← zero_eq_zero]
+    rw [zero_add]
+    rfl
+  · rw [add_succ, succ_add, ih]
+    
 -- Associativity of addition: (n + m) + k = n + (m + k)
 lemma add_assoc (n m k : MyNat) : (n + m) + k = n + (m + k) := by
-  sorry
+  induction' k with l ih
+  · rfl
+  · rw [add_succ, add_succ, add_succ, ih]
+
+example (n m k : MyNat) : (n + m) + k = n + (m + k) := by
+  induction' n with l ih
+  · rw [← zero_eq_zero, zero_add, zero_add]
+  · rw [succ_add, succ_add, succ_add, ih]
+
+example (n m k : MyNat) : (n + m) + k = n + (m + k) := by
+  induction' m with l ih
+  · rw [← zero_eq_zero, add_zero, zero_add]
+  · rw [succ_add, add_succ, succ_add, add_succ, ih]
 
 -- Right commutativity of addition: n + m + k = n + k + m
 lemma add_right_comm (n m k : MyNat) : n + m + k = n + k + m := by
-  sorry
+  rw [add_assoc]
+  rw [add_comm m] -- or `rw [add_comm m k]` or `nth_rw 2 [add_comm]`
+  rw [add_assoc]
 
 example (n m : MyNat) (h : succ (n + 37) = succ (m + 42)) : n + 37 = m + 42 := by 
-  sorry
+  exact succ_inj h 
 
 example (n m : MyNat) (h1 : n = 37) (h2 : n = 37 → m = 42) : m = 42 := by
-  sorry
+  exact h2 h1
 
 example (n : MyNat) (h : n + 1 = 4) : n = 3 := by
-  sorry
+  -- rw [← succ_eq_add_one] at h
+  -- rw [four_eq_succ_three] at h
+  exact succ_inj h 
 
 example (n m : MyNat) (h1 : n = m) (h2 : n ≠ m) : False := by
-  sorry
+  contradiction
+
+example (n m : MyNat) (h1 : n = m) (h2 : n ≠ m) : False := h2 h1

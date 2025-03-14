@@ -74,8 +74,8 @@ lemma eq_succ_of_ne_zero {n : MyNat}
 ## `noConfusion` and injectivity of `MyNat.succ`
 -/
 
-lemma succ_inj {m n : MyNat} (h : succ n = succ m) : m = n :=
-  MyNat.noConfusion h (fun x => x.symm)
+lemma succ_inj {m n : MyNat} (h : succ n = succ m) : n = m :=
+  MyNat.noConfusion h id
 
 /-
 ## Exercises
