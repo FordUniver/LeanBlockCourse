@@ -99,8 +99,8 @@ lemma mul_left_cancel {n m k : MyNat}
       rw [← zero_eq_zero, mul_zero] at h
       have h' := add_left_eq_zero h
       contradiction
-    · rw [mul_succ, mul_succ] at h
-      sorry
+    · sorry
+      
 
 example {n m k : MyNat}
   (hn : n ≠ 0) (h : n * m = n * k) : m = k := by
