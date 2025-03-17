@@ -3,7 +3,7 @@ This part is mostly inspired by the `Natural Number Game`:
 https://adam.math.hhu.de/#/g/leanprover-community/nng4
 -/
 
-import BlockCourse.P05_NaturalNumbers.S06_Inequalities
+import LeanBlockCourse.P04_NaturalNumbers.S06_Inequalities
 import Mathlib.Tactic.Contrapose
 import Mathlib.Tactic.Tauto
 
@@ -30,11 +30,11 @@ lemma le_mul_right {n m : MyNat} (h : n * m ≠ 0) : n ≤ n * m := by
   sorry
 
 -- If `n * m = 1`, then `n = 1`
-lemma mul_right_eq_one (n m : MyNat) (h : n * m = 1) : n = 1 := by
+lemma mul_right_eq_one {n m : MyNat} (h : n * m = 1) : n = 1 := by
   sorry
 
 -- If `n ≠ 0` and `m ≠ 0`, then `n * m ≠ 0`
-lemma mul_ne_zero (n m : MyNat) (hn : n ≠ 0) (hm : m ≠ 0) : n * m ≠ 0 := by
+lemma mul_ne_zero {n m : MyNat} (hn : n ≠ 0) (hm : m ≠ 0) : n * m ≠ 0 := by
   sorry
 
 -- If `n * m = 0`, then `n = 0` or `m = 0`
