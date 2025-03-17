@@ -188,7 +188,7 @@ def InductivePoint.y (p : InductivePoint) : Nat :=
 
 
 -- Some important examples of structures
-structure Prod (α : Type u) (β : Type v) where
+structure Prod (α : Type u) (β : Type*) where
   mk ::
   fst : α
   snd : β
@@ -235,7 +235,7 @@ default (inhabited) values, and coercions.
 -- Approach 1: Define a structure for generic addition
 namespace foo
 
-structure Add (α : Type) where add : α → α → α
+structure Add (α : Type*) where add : α → α → α
 
 def double (s : Add α) (x : α) : α := s.add x x
 

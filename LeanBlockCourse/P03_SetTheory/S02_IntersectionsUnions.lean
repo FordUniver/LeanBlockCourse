@@ -131,7 +131,7 @@ lemma union_subset (R S T : Set α) (h₁ : R ⊆ T) (h₂ : S ⊆ T) : R ∪ S 
 
 example (R S T : Set α) (h₁ : R ⊆ T) (h₂ : S ⊆ T) : R ∪ S ⊆ T := by
   rintro x xrs
-  cases' xrs with xr | xs
+  cases' xrs with xr xs
   · exact h₁ xr
   · exact h₂ xs
 

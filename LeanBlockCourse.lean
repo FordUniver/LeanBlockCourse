@@ -4,3 +4,18 @@ import LeanBlockCourse.P01_Introduction.S01_TopologyExample
 import LeanBlockCourse.P01_Introduction.S02_NumberTheory
 
 import LeanBlockCourse.P02_Logic.S01_Fundamentals
+import LeanBlockCourse.P02_Logic.S02_Reasoning
+import LeanBlockCourse.P02_Logic.S03_Connectives
+import LeanBlockCourse.P02_Logic.S04_Negation
+import LeanBlockCourse.P02_Logic.S05_Quantifiers
+
+import LeanBlockCourse.P03_SetTheory.S01_SubsetsComplements
+import LeanBlockCourse.P03_SetTheory.S02_IntersectionsUnions
+import LeanBlockCourse.P03_SetTheory.S03_SetFamilies
+
+import LeanBlockCourse.P04_NaturalNumbers.S00_Types
+import LeanBlockCourse.P04_NaturalNumbers.S01_Definition
+import LeanBlockCourse.P04_NaturalNumbers.S02_Addition
+import LeanBlockCourse.P04_NaturalNumbers.S03_Multiplication
+import LeanBlockCourse.P04_NaturalNumbers.S04_Power
+import LeanBlockCourse.P04_NaturalNumbers.S05_AdvancedAddition

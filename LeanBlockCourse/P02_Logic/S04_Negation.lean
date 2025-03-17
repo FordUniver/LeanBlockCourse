@@ -300,7 +300,7 @@ example (P : Prop) : P ∨ ¬P := by
 example (P : Prop) : P ∨ ¬P := by
   rcases em P with (p | np)
   · left; exact p
-  · right; exact p
+  · right; exact np
 
 
 -- Using case analysis with implications
