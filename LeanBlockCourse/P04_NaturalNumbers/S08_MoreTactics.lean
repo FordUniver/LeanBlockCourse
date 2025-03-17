@@ -5,6 +5,7 @@ https://adam.math.hhu.de/#/g/leanprover-community/nng4
 
 import LeanBlockCourse.P04_NaturalNumbers.S07_AdvancedMultiplication
 
+set_option trace.Meta.Tactic.simp true
 namespace MyNat
 
 /-
@@ -84,7 +85,7 @@ example (a b c d e f g h : MyNat) :
   simp only [add_assoc, add_comm, add_left_comm]    
 
 -- We can also tag lemmas with `simp` to make them simp lemmas.
-attribute [simp] add_assoc add_comm add_left_comm
+attribute [simp] add_assoc add_comm add_left_comm mul_one
 
 example (a b c d e f g h : MyNat) :
     (d + f) + (h + (a + c)) + (g + e + b) = a + b + c + d + e + f + g + h := by
@@ -139,8 +140,17 @@ example (n m k : MyNat) (hnm : n ≤ m) (hmk : m ≤ k) : n ≤ k := by
 
 -- Distributive law with calc
 example (a b : MyNat) : a * (1 + b) = a + a * b := by
-  sorry
+  calc a * (1 + b)   = a * 1 + a * b   := mul_add a 1 b
+  _                  = a + a * b       := by simp
+
+#check Nat.mul_one
 
 -- Rearranging terms using calc
 example (a b c : MyNat) : (a + b) + (b + c) = (b + b) + (a + c) := by
-  sorry
+  calc (a + b) + (b + c) = a + (b + (b + c))      := by exact add_assoc a b (b + c) 
+                       _ = a + ((b + b) + c)      := by rw [add_assoc]
+                       _ = (b + b) + (a + c)      := add_left_comm a (b + b) c
+
+example (a b c : MyNat) : (a + b) + (b + c) = (b + b) + (a + c) := by
+  simp 
+  
