@@ -77,3 +77,14 @@ lemma mul_eq_zero {n m : MyNat} (h : n * m = 0) : n = 0 ∨ m = 0 := by
   obtain ⟨h₁, h₂⟩ := hc
   have h' := mul_ne_zero h₁ h₂
   contradiction
+
+
+
+
+/-
+## A challenging induction: `induction` while `generalizing`
+-/
+
+-- If `n ≠ 0` and `n * m = n * k`, then `m = k`
+lemma mul_left_cancel {n m k : MyNat} (hn : n ≠ 0) (h : n * m = n * k) : m = k := by
+  sorry
