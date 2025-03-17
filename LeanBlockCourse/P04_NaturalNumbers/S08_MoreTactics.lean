@@ -3,7 +3,7 @@ This part is mostly inspired by the `Natural Number Game`:
 https://adam.math.hhu.de/#/g/leanprover-community/nng4
 -/
 
-import LeanBlockCourse.P04_NaturalNumbers.S07_AdvancedMultiplications
+import LeanBlockCourse.P04_NaturalNumbers.S07_AdvancedMultiplication
 
 namespace MyNat
 
