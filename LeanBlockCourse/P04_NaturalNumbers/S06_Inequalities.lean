@@ -44,6 +44,39 @@ lemma zero_lt (n : MyNat) (h : n ≠ 0) : 0 < n := by
     rw [add_comm]
     rfl
 
+lemma lt_iff_le_ne (m n : MyNat) : m < n ↔ m ≤ n ∧ m ≠ n := by
+  constructor
+  · intro ⟨k, hk⟩
+    rw [succ_add] at hk
+    constructor
+    · use k.succ
+      exact hk
+    · by_contra hc
+      rw [hc] at hk
+      replace hk : 0 = k.succ := (add_right_eq_self hk.symm).symm
+      contradiction
+  · intro ⟨⟨k, hk⟩, h⟩
+    cases' k with k'
+    · symm at hk; contradiction
+    · use k'
+      rw [succ_add]
+      assumption
+
+lemma lt_iff_le_ne' (m n : MyNat) : m < n ↔ ∃k, k ≠ 0 ∧ m + k = n := by
+  constructor
+  · intro ⟨k, hk⟩
+    use k.succ
+    rw [succ_add] at hk
+    constructor
+    · exact (zero_ne_succ k).symm
+    · exact hk.symm
+  · intro ⟨k, nk, hk⟩
+    obtain ⟨k', hk'⟩ := eq_succ_of_ne_zero nk
+    use k' 
+    rw [succ_add, ← add_succ, ← hk']
+    exact hk.symm
+
+
 /-
 ## Exercises
 -/
