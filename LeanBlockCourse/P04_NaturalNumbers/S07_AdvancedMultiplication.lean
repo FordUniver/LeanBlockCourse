@@ -88,7 +88,7 @@ lemma mul_eq_zero {n m : MyNat} (h : n * m = 0) : n = 0 ∨ m = 0 := by
 -- If `n ≠ 0` and `n * m = n * k`, then `m = k`
 lemma mul_left_cancel {n m k : MyNat}
   (hn : n ≠ 0) (h : n * m = n * k) : m = k := by
-  induction' m with m' ih generalizing k
+  induction' m with m' ih generalizing k -- important syntax!
   · rw [← zero_eq_zero, mul_zero] at h
     have n_or_k_zero := mul_eq_zero h.symm
     obtain (n_zero | k_zero) := n_or_k_zero
@@ -99,13 +99,11 @@ lemma mul_left_cancel {n m k : MyNat}
       rw [← zero_eq_zero, mul_zero] at h
       have h' := add_left_eq_zero h
       contradiction
-    · sorry
-      
+    · rw [mul_succ, mul_succ] at h
+      replace h := add_right_cancel h
+      have := ih h
+      rw [this]
 
-example {n m k : MyNat}
-  (hn : n ≠ 0) (h : n * m = n * k) : m = k := by
-  induction' n with n' ih generalizing k
-  sorry
 
 -- If `n ≠ 0` and `n * m = n`, then `m = 1`
 lemma mul_right_eq_self {n m : MyNat}
