@@ -87,24 +87,43 @@ If no function `f` is provided then this notation uses `id`.
 -/
 
 theorem euclid_inf_primes (S : Finset ℕ) (h : ∀ s ∈ S, s.Prime) : ∃ (p : ℕ), p ∉ S ∧ p.Prime := by
-  -- (For any finite set `S` of primes)
+   -- (For any finite set `S` of primes)
 
-  -- Consider the number `n = (∏ s ∈ S, s) + 1`.
-  
-  -- (`n_not_one`)
-  -- This `n` is not `1` since `(∏ s ∈ S, s)` is not zero since
-  -- it only contains primes, which are never zero, and the product
-  -- over non-zero elements is non-zero.
+   -- Consider the number `n = (∏ s ∈ S, s) + 1`.
+   set n := (∏ s in S, s) + 1 with n_def
 
-  -- (`p`, `p_dvds_n`, `p_prime`)
-  -- `n` has a prime divisor `p` by (`n_not_one`).
+   -- (`n_not_one`)
+   -- This `n` is not `1` since `(∏ s ∈ S, s)` is not zero since
+   -- it only contains primes, which are never zero, and the product
+   -- over non-zero elements is non-zero.
+   have n_not_one : n ≠ 1 := by
+      rw [n_def]
+      rw [Nat.succ_ne_succ]
+      rw [Finset.prod_ne_zero_iff]
+      intro s s_in_S
+      have s_prime := h s s_in_S
+      exact Nat.Prime.ne_zero s_prime
 
-  -- (`p_notin_S`)
-  -- But `p ∉ S` since otherwise `p` would be a divisor of the product
-  -- `∏ s ∈ S, s` by definition and thus also of the difference
-  -- `n − ∏ s ∈ S, s = 1` by (`p_dvds_n`) which is impossible since
-  -- `1` does not have a prime divisor and `p` is prime by (`p_prime`).
+   -- (`p`, `p_dvds_n`, `p_prime`)
+   -- `n` has a prime divisor `p` by (`n_not_one`).
+   obtain ⟨p, p_prime, p_dvd_n⟩ := Nat.exists_prime_and_dvd n_not_one
 
-  
-  -- (So a finite set `S` cannot be the collection of all prime numbers)
-  sorry
+   -- (`p_notin_S`)
+   -- But `p ∉ S` since otherwise `p` would be a divisor of the product
+   -- `∏ s ∈ S, s` by definition and thus also of the difference
+   -- `n − ∏ s ∈ S, s = 1` by (`p_dvds_n`) which is impossible since
+   -- `1` does not have a prime divisor and `p` is prime by (`p_prime`).
+   have p_not_in_S : p ∉ S := by
+      by_contra p_in_S
+
+      have p_dvd_prod : p ∣ ∏ s ∈ S, s := Finset.dvd_prod_of_mem id p_in_S
+      have p_dvd_diff : p ∣ (n - (∏ s ∈ S, s)) := Nat.dvd_sub' p_dvd_n p_dvd_prod
+      have diff_eq_one : n - ∏ s ∈ S, s = 1 := Nat.add_sub_self_left (∏ s ∈ S, s) 1
+
+      have p_dvd_one : p ∣ 1 := diff_eq_one ▸ p_dvd_diff
+      have p_ndvd_one : ¬ (p ∣ 1) := Nat.Prime.not_dvd_one p_prime
+
+      contradiction
+
+   -- (So a finite set `S` cannot be the collection of all prime numbers)
+   use p -- or emore explicitly `exact ⟨p,p_not_in_S, p_prime⟩`
