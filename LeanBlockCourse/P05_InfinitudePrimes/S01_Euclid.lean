@@ -52,20 +52,33 @@ turn those into pseudo-code and fill in any logical gaps that might occurr.
 
 Step 5: Find the following lemmas in mathlib:
 
-* `a + 1 ≠ 1` iff `a ≠ 0`.
-* Primes are not zero.
-* `Finset.prod` over non-zero numbers is non-zero.
-* Any natural number that is not `1` has a prime divisor.
-* Any factor of a product divides the product.
-* `1` does not have a prime divisor. 
-* If `p` divides two numbers, then it divides their difference (or a version that avoids difference).
+* `a + 1 ≠ 1` iff `a ≠ 0` -> `Nat.succ_ne_succ`
+* Primes are not zero -> `Nat.Prime.ne_zero`
+* `Finset.prod` over non-zero numbers is non-zero -> `Finset.prod_ne_zero_iff`
+* Any natural number that is not `1` has a prime divisor -> `Nat.exists_prime_and_dvd`
+* Any factor of a product divides the product -> `Finset.dvd_prod_of_mem`
+* `1` does not have a prime divisor -> `Nat.Prime.not_dvd_one`
+* If `p` divides two numbers, then it divides their difference (or a version that avoids difference) -> `Nat.dvd_add_right`
+
+Step 6: Formalize the proof!
 -/
 
 import Mathlib.Data.Nat.Prime.Basic       -- this allows us to use `Nat.Prime`
 import Mathlib.Data.Finset.Basic          -- this allows us to use `Finset`
 import Mathlib.Algebra.BigOperators.Fin   -- this allows us to use `∏`
 
-#check Finset.prod
+#check Nat.succ_ne_succ
+#check Nat.Prime.ne_zero
+#check Finset.prod_ne_zero_iff
+#check Nat.exists_prime_and_dvd
+#check Finset.dvd_prod_of_mem
+#check Nat.Prime.not_dvd_one
+#check Nat.dvd_sub'
+#check Nat.dvd_add_iff_left
+#check Nat.dvd_add_iff_right
+#check Nat.dvd_add_left
+#check Nat.dvd_add_right
+
 
 /-
 `Finset.prod (S : Finset α) (f : α → β)` takes two arguments (a finite set `S` and a function `f`)
