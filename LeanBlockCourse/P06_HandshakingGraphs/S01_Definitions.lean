@@ -82,11 +82,17 @@ example : d(v) = G.degree v := rfl
 
 open Finset
 
+-- 1) Define the graph we had on the blackboard with four vertices and three edges.
+-- def blackboard_graph
+
+-- 2) Show that the degree is the cardinality of the incidence set
 example : d(v) = #I(v) := by
   sorry
 
+-- 3) Show that the incidence set is the set of all incident edges
 example : I(v) = {e ∈ E | v ∈ e} := by
   sorry
 
+-- 4) Show that an edge consists of two vertices
 example (e : Sym2 V) (h : e ∈ E) : #{v | v ∈ e} = 2 := by
   sorry
