@@ -143,39 +143,3 @@ example (e : Sym2 V) (h : e ∈ E) : #{v | v ∈ e} = 2 := by
 
   have : v₁ ≠ v₂ := (G.adj_symm h).ne'
   exact card_pair this
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- 1) Define the graph we had on the blackboard with four vertices and three edges.
--- def blackboard_graph
-
--- 2) Show that the degree is the cardinality of the incidence set
-example : d(v) = #I(v) := by
-  exact Eq.symm (SimpleGraph.card_incidenceFinset_eq_degree G v)
-
--- 3) Show that the incidence set is the set of all incident edges
-example : I(v) = {e ∈ E | v ∈ e} := by
-  exact SimpleGraph.incidenceFinset_eq_filter G v
-
--- 4) Show that an edge consists of two vertices
-example (e : Sym2 V) (h : e ∈ E) : #{v | v ∈ e} = 2 := by
-  obtain ⟨v₁, v₂⟩ := e
-  simp_all
-
-  have v1_ne_v2 : v₁ ≠ v₂ := (G.adj_symm h).ne'
-  have v1_v2_card : #{v₁, v₂} = 2 := card_pair v1_ne_v2
-  have : filter (fun v ↦ v = v₁ ∨ v = v₂) univ = {v₁, v₂} := by ext x; simp
-
-  rw [this]
-  assumption
