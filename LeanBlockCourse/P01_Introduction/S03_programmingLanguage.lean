@@ -11,7 +11,7 @@ def hello : String := "Hello, World!"
 #check hello -- #check shows the type of something
 
 def hello2 := "Hello, World!"
-#check hello2 
+#check hello2
 
 /-
 Compare with:
@@ -115,12 +115,12 @@ def inferredNumber := 42        -- Inferred as Nat
 def inferredText := "Hello"     -- Inferred as String
 def inferredList := [1, 2, 3]   -- Inferred as List Nat
 
-#check inferredList 
+#check inferredList
 
 
 -- Type inference for functions
-def inferredAdd (x : Nat) y := x + y -- type of `y` and of output is inferred as `Nat` 
-def inferredConcat (x : String) y := x ++ y -- type of `y` and output is inferred as `String` 
+def inferredAdd (x : Nat) y := x + y -- type of `y` and of output is inferred as `Nat`
+def inferredConcat (x : String) y := x ++ y -- type of `y` and output is inferred as `String`
 
 
 
@@ -192,7 +192,7 @@ def Rectangle.area (r : Rectangle) : Float :=
 
 def myRectangle : Rectangle := { width := 4.0, height := 2.0 }
 
-#eval myRectangle.area 
+#eval myRectangle.area
 
 def Rectangle.perimerter (r : Rectangle) : Float :=
   2.0 * (r.width + r.height)
@@ -269,7 +269,7 @@ def t5 (P : Prop) (p : P) : P := by exact p -- same proof
 
 -- Three proof of P ∧ Q → P
 
--- For return types of "parent type" `Prop` we usually write 
+-- For return types of "parent type" `Prop` we usually write
 -- `theorem` or `lemma` (or `example` if it is unnamed)
 theorem t6 (P Q : Prop) : P ∧ Q → P := fun ⟨p, q⟩ => p -- an actual proof
 
