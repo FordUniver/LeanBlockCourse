@@ -19,3 +19,12 @@ import LeanBlockCourse.P04_NaturalNumbers.S02_Addition
 import LeanBlockCourse.P04_NaturalNumbers.S03_Multiplication
 import LeanBlockCourse.P04_NaturalNumbers.S04_Power
 import LeanBlockCourse.P04_NaturalNumbers.S05_AdvancedAddition
+
+import LeanBlockCourse.P05_InfinitudePrimes.S01_Euclid
+import LeanBlockCourse.P05_InfinitudePrimes.S02_TFAE
+
+import LeanBlockCourse.P06_HandshakingGraphs.S01_Definitions
+import LeanBlockCourse.P06_HandshakingGraphs.S02_HandshakingLemma
+
+import LeanBlockCourse.ToMathlib.EdgeFinset
+import LeanBlockCourse.ToMathlib.FinsetCardWitness
