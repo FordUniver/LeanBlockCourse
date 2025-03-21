@@ -29,6 +29,7 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Tactic.TFAE
 import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Data.Nat.Nth
+import LeanBlockCourse.ToMathlib.FinsetCardWitness
 
 #check Nat.nth_mem_of_infinite
 #check Nat.nth_injective
@@ -154,8 +155,7 @@ theorem inf_primes_tfae : List.TFAE [
     clear tfae_1_to_2 tfae_2_to_1 tfae_6_to_3 tfae_6_to_5 tfae_5_to_6 tfae_2_to_5 tfae_4_to_3
     intro h S
     obtain ⟨T, T_card, T_prime⟩ := h S.card
-    have : S.card < T.card := by simp_all
-    have : ∃ p ∈ T, p ∉ S := by sorry
+    have : ∃ p ∈ T, p ∉ S := Finset.exists_mem_not_mem_of_card_lt_card (by simp_all)
     obtain ⟨p, p_in_T, p_nin_S⟩ := this
     apply T_prime at p_in_T
     use p
