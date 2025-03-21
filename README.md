@@ -2,6 +2,7 @@
 
 ## Announcements
 
+* Our PR [#23172](https://github.com/leanprover-community/mathlib4/pull/23172) has been accepted 🎉 Thank you everyone for participating!
 * The course starts at 10:00 on **Friday the 21st of March**.
 * The course will take place in _room 1.3.48 of the physics building_ (Arnimallee 14) on **Friday the 14th of March**.
 * The afternoon session will start half an hour later than usual at 14:30 on **Thursday the 13th of March**.
