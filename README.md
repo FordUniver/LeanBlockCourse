@@ -49,8 +49,3 @@
 
 ### A more playful approach
 * The [Lean Game Server](https://adam.math.hhu.de) inspired many of the smaller exercises
- 
-
-## Course Outline
-
-*To be added.*
