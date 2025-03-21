@@ -26,10 +26,6 @@
 * If your info view shows that it is compiling a lot of files from mathlib, then (1) run `pkill -f lean` (MacOS / Linux) or `Stop-Process -Name *lean* -Force` (Windows) to kill the running Lean processes, (2) run `lake exe cache get` to download the mathlib binaries again, and finally (3) restart the Lean server by clicking on the `∀` button in VS Code and choosing `Server: Restart Server`.
 * In the worst case, deleting the `.lake` folder and running `lake clean` can fix many issues.
 
-### Versioning with `git`
-
-*To be added.*
-
 ## Resources
 
 ### Documentation and search
